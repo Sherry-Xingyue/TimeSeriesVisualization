@@ -6,7 +6,8 @@ import pandas as pd
 import os
 
 # 使用相对路径读取数据
-data_path = os.path.join("data", "df_standardized.csv")
+# data_path = os.path.join("data", "df_standardized.csv")
+data_path = "df_standardized.csv"
 df = pd.read_csv(data_path,index_col=0)
 plot_columns = df.columns.tolist()
 
