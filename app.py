@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import statsmodels.api as sm
 
+# 页面配置：宽屏显示
+st.set_page_config(layout="wide")
+
 # 读取数据
 df = pd.read_csv("df_standardized.csv", index_col=0)
 df.index = pd.to_datetime(df.index)
@@ -12,9 +15,9 @@ columns = df.columns.tolist()
 st.title("交互式时间序列可视化与回归分析")
 
 # 选择两条线
-selected = st.multiselect("请选择两条时间序列进行回归", columns, default=columns[:2])
+selected = st.multiselect("请选择两条时间序列进行回归分析（最多两条）", columns, default=columns[:2])
 
-# 绘制图表
+# 绘图
 fig = go.Figure()
 for col in columns:
     fig.add_trace(go.Scattergl(
@@ -26,11 +29,11 @@ for col in columns:
     ))
 
 fig.update_layout(
-    height=600,
-    width=1200,
+    height=500,
     title='时间序列图',
     xaxis_title='日期',
     yaxis_title='标准化值',
+    margin=dict(l=40, r=40, t=60, b=40),
 )
 
 st.plotly_chart(fig, use_container_width=True)
