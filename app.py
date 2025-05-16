@@ -11,21 +11,22 @@ st.set_page_config(layout="wide")
 df = pd.read_csv("df_standardized.csv", index_col=0)
 df.index = pd.to_datetime(df.index)
 columns = df.columns.tolist()
+time_unit = 'month'
 
 # 页面标题
-st.title("交互式时间序列可视化与回归分析")
+st.title("Time Series Visualization")
 
 # ========== 选择变量 ==========
-st.subheader("可视化变量设置")
+st.subheader("Slecte Variables")
 displayed_vars = st.multiselect("请选择要显示在图中的时间序列", columns, default=columns[:2])
 
 # ========== Shift 设置（用于图和回归）==========
 shift_settings = {}
 if displayed_vars:
-    st.markdown("### 变量的 Shift 设置（图形与回归共用，单位：月）")
+    st.markdown("### Shift")
     for var in displayed_vars:
         shift_val = st.number_input(
-            f"{var} 的 Shift（月）", min_value=-12, max_value=12, value=0, step=1, key=f"shift_{var}")
+            f"{var} shift (in {time_unit}s)", min_value=-12, max_value=12, value=0, step=1, key=f"shift_{var}")
         shift_settings[var] = shift_val
 
 # ========== 绘图 ==========
@@ -42,20 +43,20 @@ for var in displayed_vars:
 fig.update_layout(
     height=500,
     margin=dict(l=20, r=20, t=30, b=30),
-    title='时间序列图',
-    xaxis_title='日期',
-    yaxis_title='标准化值',
+    title='Time Series',
+    xaxis_title='Date',
+    yaxis_title='Standardized Values',
 )
 st.plotly_chart(fig, use_container_width=True)
 
 # ========== 回归分析 ==========
 st.markdown("---")
-st.subheader("回归分析结果")
+st.subheader("regression(OLS, no winsor)")
 
 if len(displayed_vars) < 2:
     st.info("请选择至少两条线进行回归分析")
 else:
-    st.markdown("### 两两变量回归分析（基于 Shift 后的数据）")
+    st.markdown("### regression results")
     for y_col, x_col in combinations(displayed_vars, 2):
         y_shift, x_shift = shift_settings[y_col], shift_settings[x_col]
 
@@ -76,9 +77,8 @@ else:
 
         st.markdown(f"#### `{y_col}(t{f'+{y_shift}' if y_shift > 0 else y_shift if y_shift < 0 else ''}) ~ {x_col}(t{f'+{x_shift}' if x_shift > 0 else x_shift if x_shift < 0 else ''})`")
         st.markdown(f"""
-- **观测数**: {int(model.nobs)}  
-- **截距项 (β₀)**: {model.params[0]:.4f}  
-- **斜率系数 (β₁)**: {model.params[1]:.4f}  
-- **p 值 (β₁)**: {model.pvalues[1]:.4f}  
-- **R²**: {model.rsquared:.4f}
-        """)
+| Observations | Intercept (β₀) | Slope (β₁) | p-value (β₁) | R² |
+|--------|--------------|----------------|-----------|-----|
+| {int(model.nobs)} | {model.params[0]:.4f} | {model.params[1]:.4f} | {model.pvalues[1]:.4f} | {model.rsquared:.4f} |
+""")
+
