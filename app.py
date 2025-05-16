@@ -12,7 +12,7 @@ df.index = pd.to_datetime(df.index)
 columns = df.columns.tolist()
 
 # 页面标题
-st.title("交互式时间序列可视化与回归分析")
+st.title("Time Series Visualization")
 
 # 选择两条线
 selected = st.multiselect("请选择两条时间序列进行回归分析（最多两条）", columns, default=columns[:2])
@@ -30,9 +30,9 @@ for col in columns:
 
 fig.update_layout(
     height=500,
-    title='时间序列图',
-    xaxis_title='日期',
-    yaxis_title='标准化值',
+    title='Time Series',
+    xaxis_title='Date',
+    yaxis_title='Standardized Values',
     margin=dict(l=40, r=40, t=60, b=40),
 )
 
