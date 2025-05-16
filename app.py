@@ -40,6 +40,7 @@ for var in displayed_vars:
         name=f"{var} (shift={shift_settings[var]})"
     ))
 
+# 设置图表样式
 fig.update_layout(
     height=500,
     margin=dict(l=20, r=20, t=30, b=30),
@@ -48,13 +49,17 @@ fig.update_layout(
     yaxis_title='Standardized Values',
 )
 
-# 设置 X 轴显示每年一个 tick
+# 设置 X 轴刻度显示每年
 fig.update_xaxes(
     dtick="M12",
     tickformat="%Y",
     tickangle=0
 )
 
+# 设置鼠标悬停时显示年月
+fig.update_traces(hovertemplate='%{x|%Y-%m}<br>%{y:.4f}')
+
+# 展示图
 st.plotly_chart(fig, use_container_width=True)
 
 # ========= 回归分析 =========
