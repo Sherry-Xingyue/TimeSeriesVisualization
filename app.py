@@ -47,11 +47,18 @@ fig.update_layout(
     xaxis_title='Date',
     yaxis_title='Standardized Values',
 )
+
+# 设置 X 轴显示每年一个 tick
+fig.update_xaxes(
+    dtick="M12",
+    tickformat="%Y",
+    tickangle=0
+)
+
 st.plotly_chart(fig, use_container_width=True)
 
 # ========= 回归分析 =========
 st.markdown("---")
-
 
 # shift 显示辅助函数
 def shift_label(shift):
