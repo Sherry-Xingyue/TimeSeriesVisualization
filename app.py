@@ -17,7 +17,7 @@ time_unit = 'month'
 st.title("Time Series Visualization")
 
 # ========== 选择变量 ==========
-st.subheader("Slecte Variables")
+st.subheader("Select Variables")
 displayed_vars = st.multiselect("请选择要显示在图中的时间序列", columns, default=columns[:2])
 
 # ========== Shift 设置（用于图和回归）==========
