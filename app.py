@@ -87,7 +87,7 @@ else:
 
         st.markdown(f"#### `{y_col}({shift_label(y_shift)}) ~ {x_col}({shift_label(x_shift)})`")
         st.markdown(f"""
-| Observations | Intercept (β₀) | Slope (β₁) | p-value (β₁) | R² |
-|--------------|----------------|------------|--------------|-----|
-| {int(model.nobs)} | {model.params[0]:.4f} | {model.params[1]:.4f} | {model.pvalues[1]:.4f} | {model.rsquared:.4f} |
+| Slope (β₁) | p-value (β₁) | Intercept (β₀) | R² | Observations |
+|------------|--------------|----------------|-----|--------------|
+| {model.params[1]:.4f} | {model.pvalues[1]:.4f} | {model.params[0]:.4f} | {model.rsquared:.4f} | {int(model.nobs)} |
 """)
