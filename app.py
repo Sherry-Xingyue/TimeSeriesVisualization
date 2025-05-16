@@ -16,11 +16,11 @@ time_unit = 'month'
 # 页面标题
 st.title("Time Series Visualization")
 
-# ========== 选择变量 ==========
+# ========= 选择变量 =========
 st.subheader("Select Variables")
-displayed_vars = st.multiselect("请选择要显示在图中的时间序列", columns, default=columns[:2])
+displayed_vars = st.multiselect("Select time series to display in the plot", columns, default=columns[:2])
 
-# ========== Shift 设置（用于图和回归）==========
+# ========= Shift 设置（同步用于图和回归）=========
 shift_settings = {}
 if displayed_vars:
     st.markdown("### Shift")
@@ -29,7 +29,7 @@ if displayed_vars:
             f"{var} shift (in {time_unit}s)", min_value=-12, max_value=12, value=0, step=1, key=f"shift_{var}")
         shift_settings[var] = shift_val
 
-# ========== 绘图 ==========
+# ========= 绘图 =========
 fig = go.Figure()
 for var in displayed_vars:
     shifted_series = df[var].shift(shift_settings[var])
@@ -49,14 +49,24 @@ fig.update_layout(
 )
 st.plotly_chart(fig, use_container_width=True)
 
-# ========== 回归分析 ==========
+# ========= 回归分析 =========
 st.markdown("---")
-st.subheader("regression(OLS, no winsor)")
+
+
+# shift 显示辅助函数
+def shift_label(shift):
+    if shift == 0:
+        return "t"
+    elif shift > 0:
+        return f"t-{shift}"
+    else:
+        return f"t+{abs(shift)}"
 
 if len(displayed_vars) < 2:
-    st.info("请选择至少两条线进行回归分析")
+    st.info("Please select at least two series for regression analysis.")
 else:
-    st.markdown("### regression results")
+    st.subheader("Regression Results")
+    st.markdown("#### OLS, no winsor")
     for y_col, x_col in combinations(displayed_vars, 2):
         y_shift, x_shift = shift_settings[y_col], shift_settings[x_col]
 
@@ -69,16 +79,15 @@ else:
 
         if len(data) < 10:
             st.markdown(f"#### `{y_col} ~ {x_col}`")
-            st.warning("数据点太少，无法进行有效回归")
+            st.warning("Not enough data points for valid regression.")
             continue
 
         X = sm.add_constant(data['X'])
         model = sm.OLS(data['Y'], X).fit()
 
-        st.markdown(f"#### `{y_col}(t{f'+{y_shift}' if y_shift > 0 else y_shift if y_shift < 0 else ''}) ~ {x_col}(t{f'+{x_shift}' if x_shift > 0 else x_shift if x_shift < 0 else ''})`")
+        st.markdown(f"#### `{y_col}({shift_label(y_shift)}) ~ {x_col}({shift_label(x_shift)})`")
         st.markdown(f"""
 | Observations | Intercept (β₀) | Slope (β₁) | p-value (β₁) | R² |
-|--------|--------------|----------------|-----------|-----|
+|--------------|----------------|------------|--------------|-----|
 | {int(model.nobs)} | {model.params[0]:.4f} | {model.params[1]:.4f} | {model.pvalues[1]:.4f} | {model.rsquared:.4f} |
 """)
-
