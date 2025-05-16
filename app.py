@@ -66,7 +66,7 @@ if len(displayed_vars) < 2:
     st.info("Please select at least two series for regression analysis.")
 else:
     st.subheader("Regression Results")
-    st.markdown("#### OLS, no winsor")
+    st.markdown("###### OLS, no winsor")
     for y_col, x_col in combinations(displayed_vars, 2):
         y_shift, x_shift = shift_settings[y_col], shift_settings[x_col]
 
