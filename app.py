@@ -90,5 +90,7 @@ else:
         st.markdown(f"""
 - **观测数**: {int(model.nobs)}  
 - **截距项 (β₀)**: {model.params[0]:.4f}  
-- **斜率系数 (β₁)**: {model.params[1]:.
-
+- **斜率系数 (β₁)**: {model.params[1]:.4f}  
+- **p 值 (β₁)**: {model.pvalues[1]:.4f}  
+- **R²**: {model.rsquared:.4f}
+        """)
