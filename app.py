@@ -1,5 +1,56 @@
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+import statsmodels.api as sm
 from itertools import combinations
 
+# 页面配置
+st.set_page_config(layout="wide")
+
+# 读取数据
+df = pd.read_csv("df_standardized.csv", index_col=0)
+df.index = pd.to_datetime(df.index)
+columns = df.columns.tolist()
+
+# 标题
+st.title("交互式时间序列可视化与回归分析")
+
+# ========== 绘图设置 ==========
+st.subheader("可视化变量设置")
+
+displayed_vars = st.multiselect(
+    "请选择要显示在图中的时间序列", columns, default=columns[:2])
+
+# Shift 设置（用于图）
+shift_settings_plot = {}
+if displayed_vars:
+    st.markdown("### 图中变量的 Shift 设置（单位：月）")
+    for var in displayed_vars:
+        shift_val = st.number_input(
+            f"{var} 的 Shift（月）", min_value=-12, max_value=12, value=0, step=1, key=f"shift_{var}_plot")
+        shift_settings_plot[var] = shift_val
+
+# 绘图
+fig = go.Figure()
+for var in displayed_vars:
+    shifted_series = df[var].shift(shift_settings_plot[var])
+    fig.add_trace(go.Scattergl(
+        x=shifted_series.index,
+        y=shifted_series,
+        mode='lines',
+        name=f"{var} (shift={shift_settings_plot[var]})"
+    ))
+
+fig.update_layout(
+    height=500,
+    margin=dict(l=20, r=20, t=30, b=30),
+    title='时间序列图',
+    xaxis_title='日期',
+    yaxis_title='标准化值',
+)
+st.plotly_chart(fig, use_container_width=True)
+
+# ========== 回归分析设置 ==========
 st.markdown("---")
 st.subheader("回归分析设置")
 
@@ -12,7 +63,7 @@ if displayed_vars:
             f"{var} 的 Shift（月）", min_value=-12, max_value=12, value=0, step=1, key=f"shift_{var}_reg")
         shift_settings_reg[var] = shift_val
 
-# 自动对所有被选择的变量两两组合进行回归
+# ========== 回归分析结果展示 ==========
 if len(displayed_vars) < 2:
     st.info("请选择至少两条线进行回归分析")
 else:
@@ -39,7 +90,5 @@ else:
         st.markdown(f"""
 - **观测数**: {int(model.nobs)}  
 - **截距项 (β₀)**: {model.params[0]:.4f}  
-- **斜率系数 (β₁)**: {model.params[1]:.4f}  
-- **p 值 (β₁)**: {model.pvalues[1]:.4f}  
-- **R²**: {model.rsquared:.4f}
-        """)
+- **斜率系数 (β₁)**: {model.params[1]:.
+
