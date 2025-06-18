@@ -11,7 +11,7 @@ st.set_page_config(layout="wide")
 #df = pd.read_csv("df_standardized_finance.csv", index_col=0)
 #df = pd.read_csv("df_standardized+cross_industry_dispersion.csv", index_col=0)
 df = pd.read_csv("topic_share_by_gene_exp.csv", index_col=0)
-df.index = pd.to_datetime(df.index)
+#df.index = pd.to_datetime(df.index)
 columns = df.columns.tolist()
 time_unit = 'month'
 
@@ -50,7 +50,7 @@ fig.update_layout(
     xaxis_title='Date',
     yaxis_title='Standardized Values',
 )
-
+"""
 # 设置 X 轴刻度显示每年
 fig.update_xaxes(
     dtick="M12",
@@ -60,7 +60,7 @@ fig.update_xaxes(
 
 # 设置鼠标悬停时显示年月
 fig.update_traces(hovertemplate='%{x|%Y-%m}<br>%{y:.4f}')
-
+"""
 # 展示图
 st.plotly_chart(fig, use_container_width=True)
 
