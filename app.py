@@ -9,7 +9,8 @@ st.set_page_config(layout="wide")
 
 # 读取数据
 #df = pd.read_csv("df_standardized_finance.csv", index_col=0)
-df = pd.read_csv("df_standardized+cross_industry_dispersion.csv", index_col=0)
+#df = pd.read_csv("df_standardized+cross_industry_dispersion.csv", index_col=0)
+df = pd.read_csv("topic_share_by_gene_exp.csv", index_col=0)
 df.index = pd.to_datetime(df.index)
 columns = df.columns.tolist()
 time_unit = 'month'
